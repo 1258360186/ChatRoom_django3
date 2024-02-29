@@ -1,3 +1,5 @@
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -11,4 +13,13 @@ def first_api(request):
 
 @api_view(['POST'])
 def login_api(request):
+    name = request.data.get("name")
+    password = request.data.get("password")
+    user = User.objects.filter(username=name).first()
+    if not user:
+        return Response({'state': False,'message': '用户不存在'})
+    check = check_password(password, user.password)
+    if not check:
+        return Response({'state': False, 'message': '密码不正确'})
+
     return Response({'state': True})
