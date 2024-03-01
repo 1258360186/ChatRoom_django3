@@ -1,3 +1,6 @@
+import base64
+
+import cv2
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
@@ -24,4 +27,12 @@ def login_api(request):
         return Response({'state': False, 'message': '密码不正确'})
     token = Token.objects.update_or_create(user=user)
     token = Token.objects.get(user=user).key
-    return Response({'state': True,'token' : token })
+    image_path = r'D:\Code\ChatRoom_django3\upload\test.jpg'  # 替换为你的图片路径
+
+    image = cv2.imread(image_path)
+    if image is None:
+        # 图像加载失败
+        print("Failed to load image")
+    _, buffer = cv2.imencode('.jpg', image)
+    img_str = base64.b64encode(buffer).decode()
+    return Response({'state': True,'token' : token ,'image':img_str})
