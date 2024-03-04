@@ -8,6 +8,10 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+
+from myapp.models import Userinfo
+from django.conf import settings
+
 # Create your views here.
 
 @api_view(['GET'])
@@ -27,8 +31,9 @@ def login_api(request):
         return Response({'state': False, 'message': '密码不正确'})
     token = Token.objects.update_or_create(user=user)
     token = Token.objects.get(user=user).key
-    image_path = r'D:\Code\ChatRoom_django3\upload\test.jpg'  # 替换为你的图片路径
-
+    image_path = Userinfo.objects.get(belong=user).headImg.url #r'D:\Code\ChatRoom_django3\upload\test.jpg'  # 替换为你的图片路径
+    image_path = str(settings.BASE_DIR) + image_path.replace('/', '\\')
+    print(image_path)
     image = cv2.imread(image_path)
     if image is None:
         # 图像加载失败
