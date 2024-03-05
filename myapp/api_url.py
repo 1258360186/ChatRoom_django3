@@ -7,5 +7,5 @@ from myapp import views
 
 urlpatterns = [
     path('', views.first_api),
-    path('login/', views.login_api),
+    path('login/', views.LoginView.as_view()),
 ]
